@@ -1,0 +1,31 @@
+{
+  "decision_id": "D-f01824fc",
+  "note": "Practice file. A made-up week for a made-up stock.",
+  "events": [
+    {"event": "submitted", "broker_order_id": "practice-1",
+     "client_order_id": "swarm-D-f01824fc",
+     "status": "accepted", "symbol": "DEMO", "side": "buy",
+     "qty": 1, "limit_price": 70.96,
+     "event_time_utc": "2023-11-27T21:10:00Z",
+     "observed_at_utc": "2023-11-27T21:10:01Z"},
+    {"event": "new", "broker_order_id": "practice-1",
+     "event_time_utc": "2023-11-28T14:30:00Z",
+     "observed_at_utc": "2023-11-28T14:30:01Z"},
+    {"event": "fill", "broker_order_id": "practice-1",
+     "symbol": "DEMO", "side": "buy", "qty": 1,
+     "price": 70.88,
+     "event_time_utc": "2023-11-28T14:30:02Z",
+     "observed_at_utc": "2023-11-28T14:30:03Z"},
+    {"event": "submitted", "broker_order_id": "practice-2",
+     "client_order_id": "swarm-D-f01824fc-x1206",
+     "status": "accepted", "symbol": "DEMO", "side": "sell",
+     "qty": 1, "limit_price": 74.10,
+     "event_time_utc": "2023-12-06T13:45:00Z",
+     "observed_at_utc": "2023-12-06T13:45:01Z"},
+    {"event": "fill", "broker_order_id": "practice-2",
+     "symbol": "DEMO", "side": "sell", "qty": 1,
+     "price": 74.31,
+     "event_time_utc": "2023-12-06T14:30:05Z",
+     "observed_at_utc": "2023-12-06T14:30:06Z"}
+  ]
+}

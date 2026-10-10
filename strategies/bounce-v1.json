@@ -1,0 +1,7 @@
+{
+  "name": "bounce",
+  "version": 1,
+  "entry": {"type": "bounce", "lookback": 3},
+  "exit": {"stop_pct": 0.06, "target_pct": 0.12, "max_days": 15},
+  "limit_pad_pct": 0.003
+}

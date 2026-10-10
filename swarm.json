@@ -1,0 +1,40 @@
+{
+  "watchlist": ["DEMO"],
+  "account_usd": 1000,
+  "seats": {
+    "research": {"provider": "script", "model": "none"},
+    "thesis": {"provider": "script", "model": "none"},
+    "challenge": {"provider": "script", "model": "none"},
+    "risk": {"provider": "script", "model": "none"},
+    "execution": {"provider": "code", "model": "none"}
+  },
+  "scene": "first",
+  "limits": {
+    "max_position_usd": 100,
+    "max_open_positions": 3,
+    "max_chase_pct": 0.02
+  },
+  "rates": {
+    "none": {"in": 0.0, "out": 0.0},
+    "small": {"in": 0.5, "out": 2.0},
+    "large": {"in": 5.0, "out": 20.0}
+  },
+  "costs": {
+    "data_usd_month": 0,
+    "decisions_month": 20,
+    "buy_fee_usd": 0.01,
+    "sell_fee_usd": 0.02,
+    "spread_bps": 5,
+    "slip_bps": 5
+  },
+  "lineups": {
+    "all-small": {"research": "small", "thesis": "small",
+                  "challenge": "small", "risk": "small"},
+    "big-skeptic": {"research": "small", "thesis": "small",
+                    "challenge": "large", "risk": "small"},
+    "big-risk": {"research": "small", "thesis": "small",
+                 "challenge": "small", "risk": "large"},
+    "all-large": {"research": "large", "thesis": "large",
+                  "challenge": "large", "risk": "large"}
+  }
+}

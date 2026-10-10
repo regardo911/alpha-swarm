@@ -1,0 +1,12 @@
+{
+  "setup": "breakout-v1",
+  "limit": 70.96,
+  "reasons": [
+    {"text": "Breakout fired on the close.",
+     "cites": ["S1", "F1", "F2"]},
+    {"text": "Raised outlook backs the move.",
+     "cites": ["N1"]}
+  ],
+  "ends_if": "A close back under the 20-day average.",
+  "expires_utc": "2023-11-28T21:00:00Z"
+}

@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "objections": [
+    {"text": "The supplier delay is not answered.",
+     "cites": ["N3"]},
+    {"text": "The mismatched close is not today's bar.",
+     "cites": ["X1"]}
+  ]
+}

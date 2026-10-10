@@ -1,0 +1,14 @@
+{
+  "observations": [
+    {"text": "Closed above the 20-day high.",
+     "cites": ["F1", "F2", "S1"]},
+    {"text": "Two upbeat company headlines today.",
+     "cites": ["N1", "N2"]},
+    {"text": "A supplier delay is the open risk.",
+     "cites": ["N3"]},
+    {"text": "FLAG: sources disagree on one close.",
+     "cites": ["X1"]}
+  ],
+  "worth_a_thesis": true,
+  "setup": "breakout-v1"
+}

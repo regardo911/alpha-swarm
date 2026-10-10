@@ -1,0 +1,12 @@
+{
+  "setup": "breakout-v1",
+  "limit": 70.80,
+  "reasons": [
+    {"text": "Breakout fired on the close.",
+     "cites": ["S1", "F1", "F2"]},
+    {"text": "Delay is a risk, so I pay less.",
+     "cites": ["N3"]}
+  ],
+  "ends_if": "A close back under the 20-day average.",
+  "expires_utc": "2023-11-28T21:00:00Z"
+}

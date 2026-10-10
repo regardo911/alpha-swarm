@@ -1,0 +1,6 @@
+{
+  "min_trades": 10,
+  "retire_if_net_usd_below": 0,
+  "retire_if_drawdown_pct_above": 25,
+  "revise_if_behind_benchmark": true
+}

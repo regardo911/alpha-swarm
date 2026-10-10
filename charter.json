@@ -1,0 +1,33 @@
+{
+  "roles": [
+    {"id": "research",
+     "input": "packet", "output": "brief",
+     "owns": "which facts matter today",
+     "keys": ["observations", "worth_a_thesis", "setup"],
+     "may_not": ["name a price", "size", "trade"]},
+    {"id": "thesis",
+     "input": "brief", "output": "thesis",
+     "owns": "what to buy and at what limit",
+     "keys": ["setup", "limit", "reasons", "ends_if",
+              "expires_utc"],
+     "may_not": ["approve itself", "size", "trade"]},
+    {"id": "challenge",
+     "input": "thesis", "output": "verdict",
+     "owns": "whether the thesis survives the facts",
+     "keys": ["verdict", "objections"],
+     "may_not": ["write a new thesis", "size", "trade"]},
+    {"id": "risk",
+     "input": "verdict", "output": "size",
+     "owns": "how many dollars go on the trade",
+     "keys": ["vote", "dollars", "why"],
+     "may_not": ["raise a limit", "trade"]},
+    {"id": "execution",
+     "input": "size", "output": "order",
+     "owns": "whether the broker did what was approved",
+     "keys": ["symbol", "side", "qty", "limit_price"],
+     "may_not": ["change symbol", "change side",
+                 "change size", "change limit"]}
+  ],
+  "human": ["turn on live trading", "raise the money cap",
+            "keep, change or drop a strategy"]
+}

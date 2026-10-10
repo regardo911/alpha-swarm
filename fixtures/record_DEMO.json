@@ -1,0 +1,8 @@
+{
+  "note": "Practice file. Twenty made-up closed trades.",
+  "nets": [3.32, -4.10, 5.25, 2.90, -3.75, 6.40, 1.15, -4.30,
+           4.85, 3.10, -2.95, 7.20, -4.05, 2.35, 5.60, -3.20,
+           4.45, 1.90, -2.10, 6.05],
+  "extra": {"unfilled_pct": 10, "order_pct_of_volume": 0.01,
+            "broken_rows": 0}
+}

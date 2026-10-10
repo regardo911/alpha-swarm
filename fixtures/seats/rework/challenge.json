@@ -1,0 +1,7 @@
+{
+  "verdict": "REVISE",
+  "objections": [
+    {"text": "The supplier delay is ignored.",
+     "cites": ["N3"]}
+  ]
+}

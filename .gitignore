@@ -1,0 +1,27 @@
+# your keys stay on your machine
+keys.env
+.venv/
+__pycache__/
+.DS_Store
+
+# everything the desk writes as it works
+ledger.db
+packets/
+runs/
+orders/
+cards/
+bars/
+sheets/
+morning.log
+bad.json
+swarm.real.json
+
+# the mandate is yours to sign: copy it in from
+# chapters/05-connect-to-your-broker/ and put your name in it
+/mandate.json
+
+# make_fixture.py rebuilds these four in under a second
+fixtures/bars_DEMO.json
+fixtures/bars_BENCH.json
+fixtures/second_DEMO.json
+fixtures/news_DEMO.json

@@ -1,0 +1,7 @@
+{
+  "name": "breakout",
+  "version": 1,
+  "entry": {"type": "breakout", "lookback": 20},
+  "exit": {"stop_pct": 0.06, "target_pct": 0.12, "max_days": 15},
+  "limit_pad_pct": 0.003
+}

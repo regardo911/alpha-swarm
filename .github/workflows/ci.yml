@@ -1,0 +1,32 @@
+name: replay
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.12", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: The one pinned package the book installs
+        run: python -m pip install alpaca-py==0.44.0
+      - name: Every file compiles
+        run: python -m compileall -q .
+      - name: Replay the practice drills with no keys and the network blocked
+        shell: bash
+        run: |
+          set -o pipefail
+          python tests/replay.py --no-skip | tee replay.out
+          tail -1 replay.out | grep -Eq '^[1-9][0-9]* drills, '

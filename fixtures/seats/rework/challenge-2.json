@@ -1,0 +1,7 @@
+{
+  "verdict": "PASS",
+  "objections": [
+    {"text": "Lower limit prices in the delay.",
+     "cites": ["N3"]}
+  ]
+}

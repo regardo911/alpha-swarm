@@ -1,0 +1,10 @@
+{
+  "setup": "breakout-v1",
+  "limit": 70.96,
+  "reasons": [
+    {"text": "Earnings beat by a mile last night.",
+     "cites": ["N9"]}
+  ],
+  "ends_if": "A close back under the 20-day average.",
+  "expires_utc": "2023-11-28T21:00:00Z"
+}

@@ -1,0 +1,465 @@
+$ python check_charter.py
+5 roles: research > thesis > challenge > risk > execution
+chain OK: packet > brief > thesis > verdict > size > order
+5 decisions, 0 overlaps
+the human keeps:
+  turn on live trading
+  raise the money cap
+  keep, change or drop a strategy
+CHARTER OK
+[exit 0]
+
+$ python check_charter.py bad.json
+OVERLAP: thesis and risk both own
+  'how many dollars go on the trade'
+CHARTER BROKEN: 1 problem(s)
+[exit 1]
+
+$ python check_charter.py bad.json
+CHAIN: challenge reads 'brief'
+  the seat before it writes 'thesis'
+CHARTER BROKEN: 1 problem(s)
+[exit 1]
+
+$ python make_fixture.py
+wrote fixtures/bars_DEMO.json
+wrote fixtures/bars_BENCH.json
+wrote fixtures/second_DEMO.json
+wrote fixtures/news_DEMO.json
+[exit 0]
+
+$ python packet.py DEMO --fixture
+DEMO as of 2023-11-27T21:00:00Z
+  F1  Last close 70.75 on 2023-11-27
+  F2  Highest high of the prior 20 days 70.37
+  F3  5-day change +1.1%
+  F4  20-day average close 68.65
+  F5  Average daily dollar volume 51,008,138
+  F6  Second source matches 29 of 30 closes
+  X1  FLAG sources disagree on 2023-11-23: 70.25 vs 70.67
+  S1  breakout-v1 fired, entry limit 70.96
+  N1  DEMO raises full-year sales outlook (Fixture Wire)
+  N2  DEMO opens second plant ahead of plan (Fixture Daily)
+  N3  Supplier warns of parts delays into DEMO (Fixture Wire)
+11 facts, 6 sources, 1 flag(s)
+setups fired: ['breakout-v1']
+saved packets/P-0390dac823.json
+[exit 0]
+
+$ python packet.py scan --fixture
+DEMO  2023-11-27  close    70.75  breakout-v1
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json
+decision D-f01824fc  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       REDUCE $80
+  order      buy 1 DEMO limit 70.96 day
+  status     RISK_APPROVED
+saved runs/D-f01824fc.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json
+decision D-9508a327  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  status     NO_ORDER
+  error      thesis: unsupported claim, cites ['N9']
+saved runs/D-9508a327.json
+[exit 0]
+
+$ python broker.py send runs/D-f01824fc.json
+REFUSED here: $70.96 is over the signed cap of $50
+[exit 1]
+
+$ python broker.py send runs/D-f01824fc.json
+REFUSED here: a practice-file decision, not a real stock
+[exit 1]
+
+$ python swarm.py packets/P-0390dac823.json
+decision D-04fe496f  DEMO
+  thesis     buy at 70.80 on breakout-v1
+  challenge  PASS, 1 objection(s), after 1 rework
+  risk       REDUCE $80
+  order      buy 1 DEMO limit 70.80 day
+  status     RISK_APPROVED
+saved runs/D-04fe496f.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json
+decision D-4c789d50  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       APPROVE $500
+  order      buy 1 DEMO limit 70.96 day
+  status     RISK_APPROVED
+  why        risk asked $500, hard limit gave $100
+saved runs/D-4c789d50.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json price=73.10
+decision D-f01824fc  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       REDUCE $80
+  status     EXPIRED
+  why        price 73.10 is past 72.38, the most this desk chases
+saved runs/D-f01824fc.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json now=2023-11-29T14:30:00Z
+decision D-f01824fc  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       REDUCE $80
+  status     EXPIRED
+  why        thesis died 2023-11-28T21:00:00Z
+saved runs/D-f01824fc.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json open=3
+decision D-f01824fc  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       REDUCE $80
+  status     VETOED
+  why        3 positions open, hard limit 3
+saved runs/D-f01824fc.json
+[exit 0]
+
+$ python swarm.py packets/P-0390dac823.json
+decision D-f01824fc  DEMO
+  thesis     buy at 70.96 on breakout-v1
+  challenge  PASS, 2 objection(s)
+  risk       REDUCE $80
+  order      buy 1 DEMO limit 70.96 day
+  status     RISK_APPROVED
+saved runs/D-f01824fc.json
+[exit 0]
+
+$ python ledger.py add runs/D-f01824fc.json
+runs/D-f01824fc.json: 6 rows added
+[exit 0]
+
+$ python ledger.py add runs/D-f01824fc.json
+runs/D-f01824fc.json: already in the ledger
+[exit 0]
+
+$ python ledger.py trace D-f01824fc
+D-f01824fc: 6 rows
+  1 evidence     research  1d4256140d925372  P-0390dac823
+  2 brief        research  744989739a5f0f6f  
+  3 thesis       thesis    8de0d22e041d12eb  limit 70.96
+  4 challenge    challenge c13ccce14dfae8f0  PASS
+  5 risk         risk      571fd6b287139583  REDUCE
+  6 decision     execution bcd76b77ab7ce9ee  RISK_APPROVED
+strategy breakout-v1@d0c3884fe3c8
+[exit 0]
+
+$ python ledger.py add fixtures/events_DEMO.json
+fixtures/events_DEMO.json: 5 rows added
+[exit 0]
+
+$ python ledger.py trace D-f01824fc
+D-f01824fc: 11 rows
+  1 evidence     research  1d4256140d925372  P-0390dac823
+  2 brief        research  744989739a5f0f6f  
+  3 thesis       thesis    8de0d22e041d12eb  limit 70.96
+  4 challenge    challenge c13ccce14dfae8f0  PASS
+  5 risk         risk      571fd6b287139583  REDUCE
+  6 decision     execution bcd76b77ab7ce9ee  RISK_APPROVED
+  7 submitted    execution 00736db7aa6e256b  buy limit 70.96
+  8 new          execution 0c7720bc65169281  
+  9 fill         execution c1ba9d522623a2c7  buy 1 at 70.88
+ 10 submitted    execution fb172a0316d0e5e9  sell limit 74.10
+ 11 fill         execution 9a414d4c76beee37  sell 1 at 74.31
+strategy breakout-v1@d0c3884fe3c8
+[exit 0]
+
+$ python ledger.py tamper
+UPDATE   refused: append-only: no UPDATE
+DELETE   refused: append-only: no DELETE
+REPLACE  refused: append-only: no DELETE
+[exit 0]
+
+$ python ledger.py verify
+11 rows, 0 with a broken hash
+[exit 0]
+
+$ python ledger.py rules
+breakout-v1: traded as d0c3884fe3c8, same file
+[exit 0]
+
+$ python ledger.py rules
+breakout-v1: traded as d0c3884fe3c8, CHANGED on disk
+  save edits as a new version
+[exit 0]
+
+$ python ledger.py rules
+breakout-v1: traded as d0c3884fe3c8, same file
+[exit 0]
+
+$ python ledger.py score
+YOUR TRADES         closed  wins     net $
+  none yet
+PRACTICE FILE       closed  wins     net $
+  breakout-v1            1     1      3.43
+[exit 0]
+
+$ python walkforward.py DEMO
+DEMO: untouched days 2021-12-22 to 2023-11-27
+BENCH buy and hold, same days: +21.6%
+strategy      net trades wins  maxDD sharpe    t  cost$ beat?
+breakout-v1 +37.0%    18   13   8.2%   1.43  2.0  21.65 YES
+pullback-v1  +8.8%    12    8  10.6%   0.48  0.7  12.46 no
+bounce-v1    -6.5%    17    7  27.2%  -0.24 -0.3  17.67 no
+breakout-v1: 20 signals, 2 never filled
+pullback-v1: 14 signals, 2 never filled
+bounce-v1: 18 signals, 1 never filled
+saved cards/DEMO.json
+[exit 0]
+
+$ python walkforward.py DEMO breakout-v1
+breakout-v1 window by window
+untouched from  lookback   tuned  untouched
+2021-12-22            40  +22.8%     +14.4%
+2022-06-16            40  +40.5%      +3.5%
+2022-12-09            10  +28.2%      +4.9%
+2023-06-05            10  +14.2%     +10.3%
+tuned on the latest 252 days: lookback 10
+[exit 0]
+
+$ python walkforward.py DEMO bounce-v1
+bounce-v1 window by window
+untouched from  lookback   tuned  untouched
+2021-12-22             4   -2.4%     +19.2%
+2022-06-16             2  +43.8%     -12.3%
+2022-12-09             3  +15.2%      -8.4%
+2023-06-05             3   -7.2%      -2.3%
+tuned on the latest 252 days: lookback 2
+[exit 0]
+
+$ python ledger.py add cards/DEMO.json
+cards/DEMO.json: 3 rows added
+[exit 0]
+
+$ python ledger.py score
+YOUR TRADES         closed  wins     net $
+  none yet
+PRACTICE FILE       closed  wins     net $
+  breakout-v1            1     1      3.43
+PAST MARKETS        trades beat?  net $ per 1,000
+  breakout-v1 DEMO      18   YES    370.43
+  pullback-v1 DEMO      12    no     88.14
+  bounce-v1 DEMO        17    no    -64.63
+[exit 0]
+
+$ python costs.py runs/D-f01824fc.json --record
+decision D-f01824fc  position $70.96
+  model calls measured $  0.0000
+    research           $  0.0000
+    thesis             $  0.0000
+    challenge          $  0.0000
+    risk               $  0.0000
+  market data assumed  $  0.0000
+  broker fees assumed  $  0.0300
+  spread      assumed  $  0.0355
+  slippage    assumed  $  0.0710
+  total                $  0.1364
+  break-even move         0.19%
+cost row added to the ledger
+[exit 0]
+
+$ python ledger.py trace D-f01824fc
+D-f01824fc: 12 rows
+  1 evidence     research  1d4256140d925372  P-0390dac823
+  2 brief        research  744989739a5f0f6f  
+  3 thesis       thesis    8de0d22e041d12eb  limit 70.96
+  4 challenge    challenge c13ccce14dfae8f0  PASS
+  5 risk         risk      571fd6b287139583  REDUCE
+  6 decision     execution bcd76b77ab7ce9ee  RISK_APPROVED
+  7 submitted    execution 00736db7aa6e256b  buy limit 70.96
+  8 new          execution 0c7720bc65169281  
+  9 fill         execution c1ba9d522623a2c7  buy 1 at 70.88
+ 10 submitted    execution fb172a0316d0e5e9  sell limit 74.10
+ 11 fill         execution 9a414d4c76beee37  sell 1 at 74.31
+ 12 cost         execution 3f13860c63e94428  $0.1364
+strategy breakout-v1@d0c3884fe3c8
+[exit 0]
+
+$ python costs.py lineups fixtures/tokens_DEMO.json
+lineup        $/decision  break-even move at
+                          $100    $250    $500    $1000   
+all-small     $0.0061     0.19%   0.16%   0.16%   0.15%   
+big-skeptic   $0.0254     0.21%   0.17%   0.16%   0.16%   
+big-risk      $0.0101     0.19%   0.17%   0.16%   0.15%   
+all-large     $0.0615     0.24%   0.19%   0.17%   0.16%   
+[exit 0]
+
+$ python ledger.py score
+YOUR TRADES         closed  wins     net $
+  none yet
+PRACTICE FILE       closed  wins     net $
+  breakout-v1            1     1      3.29
+PAST MARKETS        trades beat?  net $ per 1,000
+  breakout-v1 DEMO      18   YES    370.43
+  pullback-v1 DEMO      12    no     88.14
+  bounce-v1 DEMO        17    no    -64.63
+[exit 0]
+
+$ python ladder.py
+rung: practice ($100 a trade, practice)
+gate               have      need       
+closed trades      0         >= 20      NOT YET
+net $ per trade    0         >= 0.01    NOT YET
+drawdown %         0.0       <= 10      pass
+unfilled %         0         <= 30      pass
+order % of volume  0.0       <= 1.0     pass
+ledger hashes      0         == 0       pass
+STAY. Still open: closed trades, net $ per trade
+[exit 0]
+
+$ python ladder.py fixtures/record_DEMO.json
+WHAT IF: fixtures/record_DEMO.json
+rung: practice ($100 a trade, practice)
+gate               have      need       
+closed trades      20        >= 20      pass
+net $ per trade    1.5       >= 0.01    pass
+drawdown %         4.3       <= 10      pass
+unfilled %         10        <= 30      pass
+order % of volume  0.01      <= 1.0     pass
+ledger hashes      0         == 0       pass
+EARNED: first money, $100 a trade, live
+to take it, you sign mandate.json
+[exit 0]
+
+$ python ladder.py
+rung: first money ($100 a trade, live)
+gate               have      need       
+closed trades      0         >= 20      NOT YET
+net $ per trade    0         >= 0.01    NOT YET
+drawdown %         0.0       <= 10      pass
+unfilled %         0         <= 30      pass
+order % of volume  0.0       <= 1.0     pass
+ledger hashes      0         == 0       pass
+STAY. Still open: closed trades, net $ per trade
+[exit 0]
+
+$ python retire.py
+no thresholds locked. Run: python retire.py lock
+[exit 1]
+
+$ python retire.py lock
+thresholds locked 12e88a0e5b75
+[exit 0]
+
+$ python walkforward.py DEMO
+DEMO: untouched days 2021-12-22 to 2023-11-27
+BENCH buy and hold, same days: +21.6%
+strategy      net trades wins  maxDD sharpe    t  cost$ beat?
+breakout-v1 +37.0%    18   13   8.2%   1.43  2.0  21.65 YES
+pullback-v1  +8.8%    12    8  10.6%   0.48  0.7  12.46 no
+bounce-v1    -6.5%    17    7  27.2%  -0.24 -0.3  17.67 no
+breakout-v1: 20 signals, 2 never filled
+pullback-v1: 14 signals, 2 never filled
+bounce-v1: 18 signals, 1 never filled
+saved cards/DEMO.json
+[exit 0]
+
+$ python ledger.py add cards/DEMO.json
+cards/DEMO.json: 3 rows added
+[exit 0]
+
+$ python retire.py
+breakout-v1 DEMO  CONTINUE     passed every threshold
+pullback-v1 DEMO  REVISE       made money, lost to the benchmark
+bounce-v1   DEMO  RETIRE       net $-64.63
+[exit 0]
+
+$ python retire.py
+REFUSED: stop_rules.json changed after it was locked
+  locked  12e88a0e5b75
+  on disk 4f0babcfc5cd
+  put the file back, or lock the new one and rerun the test
+[exit 1]
+
+$ python retire.py
+breakout-v1 DEMO  CONTINUE     passed every threshold
+pullback-v1 DEMO  REVISE       made money, lost to the benchmark
+bounce-v1   DEMO  RETIRE       net $-64.63
+[exit 0]
+
+$ ls strategies strategies/retired
+strategies:
+breakout-v1.json
+pullback-v2.json
+retired
+
+strategies/retired:
+bounce-v1.json
+pullback-v1.json
+[exit 0]
+
+$ python packet.py scan --fixture
+DEMO  2023-11-27  close    70.75  breakout-v1
+[exit 0]
+
+$ python retire.py lock
+thresholds locked 12e88a0e5b75
+[exit 0]
+
+$ python walkforward.py DEMO
+DEMO: untouched days 2021-12-22 to 2023-11-27
+BENCH buy and hold, same days: +21.6%
+strategy      net trades wins  maxDD sharpe    t  cost$ beat?
+breakout-v1 +37.0%    18   13   8.2%   1.43  2.0  21.65 YES
+pullback-v2 +36.1%    15   12   9.5%   1.52  2.1  18.29 YES
+breakout-v1: 20 signals, 2 never filled
+pullback-v2: 18 signals, 3 never filled
+saved cards/DEMO.json
+[exit 0]
+
+$ python ledger.py add cards/DEMO.json
+cards/DEMO.json: 2 rows added
+[exit 0]
+
+$ python retire.py
+breakout-v1 DEMO  CONTINUE     passed every threshold
+pullback-v2 DEMO  CONTINUE     passed every threshold
+[exit 0]
+
+$ python ledger.py rules
+breakout-v1: traded as d0c3884fe3c8, same file
+pullback-v1: traded as f6b1a1663326, retired, same file
+bounce-v1: traded as c730e46ad6e4, retired, same file
+pullback-v2: traded as 937e698b4873, same file
+[exit 0]
+
+$ python daily.py week
+YOUR TRADES         closed  wins     net $
+  none yet
+PRACTICE FILE       closed  wins     net $
+  breakout-v1            1     1      3.29
+PAST MARKETS        trades beat?  net $ per 1,000
+  breakout-v1 DEMO      18   YES    370.43
+  pullback-v2 DEMO      15   YES    360.55
+  pullback-v1 DEMO      12    no     88.14
+  bounce-v1 DEMO        17    no    -64.63
+
+rung: practice ($100 a trade, practice)
+gate               have      need       
+closed trades      0         >= 20      NOT YET
+net $ per trade    0         >= 0.01    NOT YET
+drawdown %         0.0       <= 10      pass
+unfilled %         0         <= 30      pass
+order % of volume  0.0       <= 1.0     pass
+ledger hashes      0         == 0       pass
+STAY. Still open: closed trades, net $ per trade
+
+breakout-v1 DEMO  CONTINUE     passed every threshold
+pullback-v2 DEMO  CONTINUE     passed every threshold
+[exit 0]
+
+$ python ledger.py verify
+30 rows, 0 with a broken hash
+[exit 0]

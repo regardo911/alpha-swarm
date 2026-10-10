@@ -1,0 +1,5 @@
+# Rule files, role cards and stop_rules.json are fingerprinted from their
+# raw bytes. A checkout with Windows line endings changes every fingerprint
+# the book prints, so every text file here is LF on every machine.
+* text=auto eol=lf
+*.png binary

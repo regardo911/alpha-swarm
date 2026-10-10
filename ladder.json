@@ -1,0 +1,16 @@
+{
+  "rungs": [
+    {"name": "practice", "mode": "practice", "cap_usd": 100},
+    {"name": "first money", "mode": "live", "cap_usd": 100},
+    {"name": "second rung", "mode": "live", "cap_usd": 250},
+    {"name": "third rung", "mode": "live", "cap_usd": 500},
+    {"name": "top rung", "mode": "live", "cap_usd": 1000}
+  ],
+  "gates": {
+    "closed_trades": 20,
+    "min_net_per_trade_usd": 0.01,
+    "max_drawdown_pct": 10,
+    "max_unfilled_pct": 30,
+    "max_order_pct_of_daily_volume": 1.0
+  }
+}
